@@ -69,6 +69,19 @@ def create_app():
     uri = "mongodb+srv://tunemusicorg:mylanchi@cluster0.3sjfbhk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=false"
     client = MongoClient(uri)
     mongo_db = client['campus_alerts']
+    try:
+        client = MongoClient(uri)
+        # Test the connection
+        client.admin.command('ping')
+        mongo_db = client['campus_alerts']
+        
+        # Make MongoDB collections accessible
+        app.mongo_notices = mongo_db['notices']
+        app.mongo_admins = mongo_db['admins']
+        print("MongoDB connection successful!")
+    except Exception as e:
+        print(f"MongoDB connection failed: {str(e)}")
+        raise
     
     # Make MongoDB collections accessible throughout the app
     app.mongo_notices = mongo_db['notices']
