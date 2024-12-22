@@ -66,7 +66,7 @@ def create_app():
     db.init_app(app)
 
     # MongoDB configuration
-    uri = "mongodb+srv://tunemusicorg:mylanchi@cluster0.3sjfbhk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0ssl=true"
+    uri = "mongodb+srv://tunemusicorg:mylanchi@cluster0.3sjfbhk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=true"
     client = MongoClient(uri)
     mongo_db = client['campus_alerts']
     try:
@@ -269,9 +269,7 @@ def create_app():
                 return redirect(url_for('login'))
 
     return app
-uri = "mongodb+srv://tunemusicorg:mylanchi@cluster0.3sjfbhk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-client = MongoClient(uri)
-mongo_db = client['campus_alerts']
+ 
 
 # Make MongoDB collections accessible throughout the app
 
