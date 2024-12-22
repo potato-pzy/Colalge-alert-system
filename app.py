@@ -7,7 +7,7 @@ from pymongo import MongoClient
 
 # Initialize SQLAlchemy globally
 db = SQLAlchemy()
-
+client = MongoClient(os.getenv('MONGODB_URI'))
 # Models
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
