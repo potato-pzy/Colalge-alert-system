@@ -66,7 +66,7 @@ def create_app():
     db.init_app(app)
 
     # MongoDB configuration
-    uri = "mongodb+srv://tunemusicorg:mylanchi@cluster0.3sjfbhk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=false"
+    uri = "mongodb+srv://tunemusicorg:mylanchi@cluster0.3sjfbhk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0ssl=true"
     client = MongoClient(uri)
     mongo_db = client['campus_alerts']
     try:
