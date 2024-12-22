@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Home - College Alert System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 style="font-size: 2rem; margin-bottom: 1rem;">Welcome to College Alert System</h1>
+    <p style="margin-bottom: 1.5rem;">Stay updated with the latest college events, notices, and announcements.</p>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <a href="{{ url_for('events.events') }}" class="btn">View Events</a>
+        <a href="{{ url_for('notices.notices') }}" class="btn">Check Notices</a>
+        <a href="{{ url_for('academic.academic_calendar') }}" class="btn">Academic Calendar</a>
+
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Latest Updates</h2>
+    <div style="display: grid; gap: 1rem;">
+        <div style="border-left: 4px solid var(--primary-color); padding-left: 1rem;">
+            <h3 style="font-size: 1.1rem; color: var(--primary-color);">Technical Symposium</h3>
+            <p style="color: #666;">Join us for the annual technical symposium on March 15th.</p>
+        </div>
+        <div style="border-left: 4px solid var(--primary-color); padding-left: 1rem;">
+            <h3 style="font-size: 1.1rem; color: var(--primary-color);">Semester Schedule</h3>
+            <p style="color: #666;">Updated semester examination schedule now available.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

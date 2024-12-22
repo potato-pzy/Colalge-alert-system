@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Login - College Alert System{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 400px; margin: 2rem auto;">
+    <h1 style="font-size: 1.5rem; text-align: center; margin-bottom: 1.5rem;">Login</h1>
+    
+    <form style="display: grid; gap: 1rem;">
+        <div>
+            <label style="display: block; margin-bottom: 0.5rem;">Email</label>
+            <input type="email" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 0.25rem;">
+        </div>
+        
+        <div>
+            <label style="display: block; margin-bottom: 0.5rem;">Password</label>
+            <input type="password" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 0.25rem;">
+        </div>
+        
+        <button type="submit" class="btn" style="width: 100%;">Login</button>
+    </form>
+    
+    <p style="text-align: center; margin-top: 1rem;">
+        Don't have an account? 
+        <a href="{{ url_for('auth.register') }}" style="color: var(--primary-color);">Register</a>
+    </p>
+</div>
+{% endblock %}

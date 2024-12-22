@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}College Alert System{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-container">
+            <a href="{{ url_for('index') }}" class="logo">College Alert</a>
+            <button class="mobile-menu-btn" id="menu-btn">
+                &#9776;
+            </button>
+            <div class="nav-links" id="nav-links">
+                <a href="{{ url_for('index') }}">Home</a>
+                <a href="{{ url_for('events.events') }}">Events</a>
+                <a href="{{ url_for('notices.notices') }}">Notices</a>
+                <a href="{{ url_for('academic.academic_calendar') }}">Calendar</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </div>
+    
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+       const menuBtn = document.querySelector('.mobile-menu-btn'); // Selects the button for toggling the menu
+const navLinks = document.querySelector('.nav-links'); // Selects the navigation links container
+
+// Toggle the display of navigation links on button click
+menuBtn.addEventListener('click', () => {
+    navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+});
+
+// Optional: Collapse the navbar when clicking outside of it
+document.addEventListener('click', (event) => {
+    if (!menuBtn.contains(event.target) && !navLinks.contains(event.target)) {
+        navLinks.style.display = 'none';
+    }
+});
+
+    </script>
+</body>
+</html>

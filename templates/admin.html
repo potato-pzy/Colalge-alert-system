@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - College Alert System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 style="font-size: 2rem; margin-bottom: 1rem;">Admin Panel - Manage College Alert System</h1>
+    <p style="margin-bottom: 1.5rem;">Admin, use the panel below to manage all events, notices, and academic calendar entries.</p>
+    
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <!-- Links to add or manage content -->
+        <a href="{{ url_for('event.add_event') }}" class="btn">Add Event</a>
+        <a href="{{ url_for('notice.add_notice') }}" class="btn">Add Notice</a>
+        <a href="{{ url_for('calendar.add_calendar_event') }}" class="btn">Add Calendar Event</a>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Manage Content</h2>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <!-- Links to manage the existing content -->
+        <a href="{{ url_for('events.events') }}" class="btn">Manage Events</a>
+        <a href="{{ url_for('notices.notices') }}" class="btn">Manage Notices</a>
+        <a href="{{ url_for('academic.academic_calendar') }}" class="btn">Manage Academic Calendar</a>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Latest Updates</h2>
+    <div style="display: grid; gap: 1rem;">
+        <div style="border-left: 4px solid var(--primary-color); padding-left: 1rem;">
+            <h3 style="font-size: 1.1rem; color: var(--primary-color);">Technical Symposium</h3>
+            <p style="color: #666;">Join us for the annual technical symposium on March 15th.</p>
+        </div>
+        <div style="border-left: 4px solid var(--primary-color); padding-left: 1rem;">
+            <h3 style="font-size: 1.1rem; color: var(--primary-color);">Semester Schedule</h3>
+            <p style="color: #666;">Updated semester examination schedule now available.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

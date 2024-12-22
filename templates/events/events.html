@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Events - College Alert System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h1 style="font-size: 2rem; margin-bottom: 1rem;">Upcoming Events</h1>
+    
+    <div style="display: grid; gap: 1.5rem;">
+        {% for event in events %}
+            <div class="card" style="margin: 0;">
+                <h2 style="color: var(--primary-color); font-size: 1.3rem;">{{ event.title }}</h2>
+                <p style="color: #666; margin: 0.5rem 0;">Date: {{ event.date }}</p>
+                <p style="margin-bottom: 1rem;">{{ event.description }}</p>
+                <a href="{{ event.link }}" class="btn">Learn More</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

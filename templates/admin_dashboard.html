@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 style="font-size: 2rem; margin-bottom: 1.5rem;">Admin Dashboard</h1>
+    
+    <!-- Notices Section -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h2 style="margin-bottom: 1rem;">Manage Notices</h2>
+        <form method="POST" action="{{ url_for('add_notice') }}">
+            <input type="text" name="title" placeholder="Notice Title" required>
+            <select name="category" required>
+                <option value="Urgent">Urgent</option>
+                <option value="Academic">Academic</option>
+                <option value="General">General</option>
+            </select>
+            <textarea name="description" placeholder="Enter Notice Description" required></textarea>
+            <button type="submit" class="btn">Add Notice</button>
+        </form>
+        <div style="margin-top: 1rem;">
+            {% for notice in notices %}
+                <div class="card" style="margin: 0; border-left: 4px solid #dc2626;">
+                    <h4>{{ notice.title }}</h4>
+                    <p>{{ notice.category }} - {{ notice.description }}</p>
+                </div>
+            {% else %}
+                <p>No notices available.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Events Section -->
+    <div class="card" style="margin-bottom: 2rem;">
+        <h2 style="margin-bottom: 1rem;">Manage Events</h2>
+        <form method="POST" action="{{ url_for('add_event') }}">
+            <input type="text" name="title" placeholder="Event Title" required>
+            <input type="date" name="date" required>
+            <textarea name="description" placeholder="Enter Event Description" required></textarea>
+            <button type="submit" class="btn">Add Event</button>
+        </form>
+        <div style="margin-top: 1rem;">
+            {% for event in events %}
+                <div class="card" style="margin: 0;">
+                    <h4>{{ event.title }} - {{ event.date }}</h4>
+                    <p>{{ event.description }}</p>
+                </div>
+            {% else %}
+                <p>No events available.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Calendar Events Section -->
+    <div class="card">
+        <h2 style="margin-bottom: 1rem;">Manage Calendar Events</h2>
+        <form method="POST" action="{{ url_for('add_calendar_event') }}">
+            <select name="month" required>
+                <option value="January">January</option>
+                <option value="February">February</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+                <option value="June">June</option>
+                <option value="July">July</option>
+                <option value="August">August</option>
+                <option value="September">September</option>
+                <option value="October">October</option>
+                <option value="November">November</option>
+                <option value="December">December</option>
+            </select>
+            <input type="date" name="date" required>
+            <textarea name="description" placeholder="Enter Calendar Event Description" required></textarea>
+            <button type="submit" class="btn">Add Calendar Event</button>
+        </form>
+        <div style="margin-top: 1rem;">
+            {% for calendar_event in calendar_events %}
+                <div class="card">
+                    <h4>{{ calendar_event.month }} - {{ calendar_event.date }}</h4>
+                    <p>{{ calendar_event.description }}</p>
+                </div>
+            {% else %}
+                <p>No calendar events available.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

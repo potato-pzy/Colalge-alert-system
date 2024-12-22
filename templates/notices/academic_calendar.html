@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Notices - College Alert System{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <h1 style="font-size: 2rem; margin-bottom: 1.5rem;">Calendar {{ current_year }}</h1>
+
+        <div style="display: grid; gap: 1.5rem;">
+            {% for month_data in calendar_events %}
+                <div class="card">
+                    <h2>{{ month_data.month }}</h2>
+                    <ul style="list-style-type: none; padding: 0;">
+                        {% for event in month_data.events %}
+                            <li style="margin-bottom: 0.5rem;"><strong>{{ event.date }}</strong>: {{ event.description }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+
+        <p style="margin-top: 1rem;">Note: Dates are subject to change. Always check official notifications.</p>
+    </div>
+{% endblock %}
