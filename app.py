@@ -9,6 +9,7 @@ import os
 # Initialize SQLAlchemy globally
 db = SQLAlchemy()
 client = MongoClient(os.getenv('MONGODB_URI'))
+
 # Models
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -69,6 +70,7 @@ def create_app():
     uri = "mongodb+srv://tunemusicorg:mylanchi@cluster0.3sjfbhk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0&ssl=true"
     client = MongoClient(uri)
     mongo_db = client['campus_alerts']
+    app.security_questions = mongo_db['security_questions']
     try:
         client = MongoClient(uri)
         # Test the connection
@@ -122,30 +124,66 @@ def create_app():
 
         return render_template('login.html')
 
+# Modify your registration route to store the security question
     @app.route('/register', methods=['GET', 'POST'])
     def register():
-        if request.method == 'POST':
-            username = request.form['username']
-            password = request.form['password']
-            confirm_password = request.form['confirm_password']
+     if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        favorite_color = request.form['favorite_color']
 
-            if password != confirm_password:
-                flash('Passwords do not match.', 'danger')
-                return redirect(url_for('register'))
+        if password != confirm_password:
+            flash('Passwords do not match.', 'danger')
+            return redirect(url_for('register'))
 
-            if User.query.filter_by(username=username).first():
-                flash('Username already exists.', 'danger')
-                return redirect(url_for('register'))
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists.', 'danger')
+            return redirect(url_for('register'))
 
-            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-            new_user = User(username=username, password=hashed_password)
-            db.session.add(new_user)
-            db.session.commit()
-            
-            flash('Registration successful! Please log in.', 'success')
+        # Store user in SQLite database
+        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+        new_user = User(username=username, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        # Store security question in MongoDB
+        security_data = {
+            "username": username,
+            "favorite_color": favorite_color.lower()  # Store in lowercase for case-insensitive comparison
+        }
+        current_app.security_questions.insert_one(security_data)
+
+        flash('Registration successful! Please log in.', 'success')
+        return redirect(url_for('login'))
+
+     return render_template('register.html')
+
+
+    # New route for password reset
+    @app.route('/reset_password', methods=['GET', 'POST'])
+    def reset_password():
+     if request.method == 'POST':
+        username = request.form['username']
+        favorite_color = request.form['favorite_color'].lower()
+        new_password = request.form['new_password']
+
+        # Check security question in MongoDB
+        user = app.mongo_admins.find_one({"username": username})
+        if user and user.get('favorite_color') == favorite_color:
+            # Update password in MongoDB
+            hashed_password = generate_password_hash(new_password, method='pbkdf2:sha256')
+            app.mongo_admins.update_one(
+                {"username": username},
+                {"$set": {"password": hashed_password}}
+            )
+            flash('Password reset successful! Please login with your new password.', 'success')
             return redirect(url_for('login'))
+        else:
+            flash('Invalid username or security answer.', 'danger')
 
-        return render_template('register.html')
+    return render_template('passwordreset.html')
+
 
     @app.route('/logout')
     def logout():
