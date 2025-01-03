@@ -57,7 +57,7 @@ def admin_required(f):
 
 def create_app():
     app = Flask(__name__)
-    
+
     # Flask configuration
     app.secret_key = 'your_secret_key'  # Change this to a secure secret key
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///campus_app.db'
@@ -76,7 +76,7 @@ def create_app():
         # Test the connection
         client.admin.command('ping')
         mongo_db = client['campus_alerts']
-        
+
         # Make MongoDB collections accessible
         app.mongo_notices = mongo_db['notices']
         app.mongo_admins = mongo_db['admins']
@@ -84,28 +84,24 @@ def create_app():
     except Exception as e:
         print(f"MongoDB connection failed: {str(e)}")
         raise
-    
-    # Make MongoDB collections accessible throughout the app
-    app.mongo_notices = mongo_db['notices']
-    app.mongo_admins = mongo_db['admins']
 
+    # Initialize database tables
     with app.app_context():
-        # all tables
         db.create_all()
-        
-        # Register blueprints
-        from routes.events import events_bp
-        from routes.notices import notices_bp
-        from routes.academic import academic
-        from routes.event_update import events_up
-        from routes.notices_update import notices_up
-        from routes.calender_update import calendar_up
-        app.register_blueprint(events_bp)
-        app.register_blueprint(notices_bp, url_prefix='/notices')
-        app.register_blueprint(academic, url_prefix='/academic')
-        app.register_blueprint(events_up)
-        app.register_blueprint(notices_up)
-        app.register_blueprint(calendar_up)
+
+    # Register blueprints
+    from routes.events import events_bp
+    from routes.notices import notices_bp
+    from routes.academic import academic
+    from routes.event_update import events_up
+    from routes.notices_update import notices_up
+    from routes.calender_update import calendar_up
+    app.register_blueprint(events_bp)
+    app.register_blueprint(notices_bp, url_prefix='/notices')
+    app.register_blueprint(academic, url_prefix='/academic')
+    app.register_blueprint(events_up)
+    app.register_blueprint(notices_up)
+    app.register_blueprint(calendar_up)
 
     # User Authentication Routes
     @app.route('/login', methods=['GET', 'POST'])
@@ -124,65 +120,69 @@ def create_app():
 
         return render_template('login.html')
 
-# Modify your registration route to store the security question
+    # Modify your registration route to store the security question
     @app.route('/register', methods=['GET', 'POST'])
     def register():
-     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        confirm_password = request.form['confirm_password']
-        favorite_color = request.form['favorite_color']
+        if request.method == 'POST':
+            username = request.form['username']
+            password = request.form['password']
+            confirm_password = request.form['confirm_password']
+            favorite_color = request.form['favorite_color']
 
-        if password != confirm_password:
-            flash('Passwords do not match.', 'danger')
-            return redirect(url_for('register'))
+            if password != confirm_password:
+                flash('Passwords do not match.', 'danger')
+                return redirect(url_for('register'))
 
-        if User.query.filter_by(username=username).first():
-            flash('Username already exists.', 'danger')
-            return redirect(url_for('register'))
+            if User.query.filter_by(username=username).first():
+                flash('Username already exists.', 'danger')
+                return redirect(url_for('register'))
 
-        # Store user in SQLite database
-        hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
-        new_user = User(username=username, password=hashed_password)
-        db.session.add(new_user)
-        db.session.commit()
+            # Store user in SQLite database
+            hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
+            new_user = User(username=username, password=hashed_password)
+            db.session.add(new_user)
+            db.session.commit()
 
-        # Store security question in MongoDB
-        security_data = {
-            "username": username,
-            "favorite_color": favorite_color.lower()  # Store in lowercase for case-insensitive comparison
-        }
-        current_app.security_questions.insert_one(security_data)
+            # Store security question in MongoDB
+            security_data = {
+                "username": username,
+                "favorite_color": favorite_color.lower()  # Store in lowercase for case-insensitive comparison
+            }
+            current_app.security_questions.insert_one(security_data)
 
-        flash('Registration successful! Please log in.', 'success')
-        return redirect(url_for('login'))
+            flash('Registration successful! Please log in.', 'success')
+            return redirect(url_for('login'))
 
-     return render_template('register.html')
-
+        return render_template('register.html')
 
     # New route for password reset
     @app.route('/reset_password', methods=['GET', 'POST'])
     def reset_password():
-     if request.method == 'POST':
-        username = request.form['username']
-        favorite_color = request.form['favorite_color'].lower()
-        new_password = request.form['new_password']
+        if request.method == 'POST':
+            username = request.form['username']
+            favorite_color = request.form['favorite_color'].lower()
+            new_password = request.form['new_password']
 
-        # Check security question in MongoDB
-        user = app.mongo_admins.find_one({"username": username})
-        if user and user.get('favorite_color') == favorite_color:
-            # Update password in MongoDB
-            hashed_password = generate_password_hash(new_password, method='pbkdf2:sha256')
-            app.mongo_admins.update_one(
-                {"username": username},
-                {"$set": {"password": hashed_password}}
-            )
-            flash('Password reset successful! Please login with your new password.', 'success')
-            return redirect(url_for('login'))
-        else:
-            flash('Invalid username or security answer.', 'danger')
+            # Check security question in MongoDB
+            user = app.mongo_admins.find_one({"username": username})
+            if user and user.get('favorite_color') == favorite_color:
+                # Update password in MongoDB
+                hashed_password = generate_password_hash(new_password, method='pbkdf2:sha256')
+                app.mongo_admins.update_one(
+                    {"username": username},
+                    {"$set": {"password": hashed_password}}
+                )
+                flash('Password reset successful! Please login with your new password.', 'success')
+                return redirect(url_for('login'))
+            else:
+                flash('Invalid username or security answer.', 'danger')
 
-    return render_template('passwordreset.html')
+        return render_template('passwordreset.html')
+
+    # More routes...
+    
+    return app
+
 
 
     @app.route('/logout')
