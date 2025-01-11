@@ -295,7 +295,7 @@ def create_app():
     # Global route protection
     @app.before_request
     def restrict_routes():
-        public_routes = ['login', 'admin_login', 'register', 'static']
+        public_routes = ['login', 'admin_login', 'register', 'static','reset_password']
         if request.endpoint and request.endpoint.split('.')[0] not in public_routes:
             if not session.get('user_id') and not session.get('admin_logged_in'):
                 flash('You need to log in first.', 'danger')
