@@ -179,6 +179,7 @@ def create_app():
 
         return render_template('passwordreset.html')
 
+    
     @app.route('/logout')
     def logout():
         session.clear()
