@@ -179,9 +179,6 @@ def create_app():
 
         return render_template('passwordreset.html')
 
-    # More routes...
-    
-    return app
 
 
 
