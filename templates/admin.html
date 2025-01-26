@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_update.html" %}
 
 {% block title %}Admin Panel - College Alert System{% endblock %}
 
@@ -12,6 +12,7 @@
         <a href="{{ url_for('event.add_event') }}" class="btn">Add Event</a>
         <a href="{{ url_for('notice.add_notice') }}" class="btn">Add Notice</a>
         <a href="{{ url_for('calendar.add_calendar_event') }}" class="btn">Add Calendar Event</a>
+        <a href="{{ url_for('attendance.view_attendance') }}" class="btn">View Attendance</a>
     </div>
 </div>
 

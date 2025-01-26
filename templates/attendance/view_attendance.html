@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}View Attendance{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 80vh; background-color: #f8f9fa; padding: 2rem;">
+    <div style="background: #ffffff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%; max-width: 800px;">
+        <h1 style="font-size: 2rem; font-weight: 600; color: #2d3748; margin-bottom: 1.5rem; text-align: center;">View Attendance</h1>
+        
+        <!-- Course Selection Form -->
+        <form method="GET" action="{{ url_for('view_attendance') }}" style="margin-bottom: 2rem;">
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label for="course" style="font-size: 1rem; font-weight: 500; color: #4a5568;">Select Course:</label>
+                <select name="course" id="course" onchange="this.form.submit()" style="padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 1rem; color: #4a5568; background-color: #ffffff; transition: border-color 0.3s ease, box-shadow 0.3s ease; width: 100%; max-width: 100%; box-sizing: border-box;">
+                    <option value="Subject 1" {% if course == 'Subject 1' %}selected{% endif %}>Subject 1</option>
+                    <option value="Subject 2" {% if course == 'Subject 2' %}selected{% endif %}>Subject 2</option>
+                    <option value="Subject 3" {% if course == 'Subject 3' %}selected{% endif %}>Subject 3</option>
+                    <option value="Subject 4" {% if course == 'Subject 4' %}selected{% endif %}>Subject 4</option>
+                    <option value="Subject 5" {% if course == 'Subject 5' %}selected{% endif %}>Subject 5</option>
+                </select>
+            </div>
+        </form>
+
+        <!-- Attendance Table -->
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; margin-top: 1rem; min-width: 600px;">
+                <thead>
+                    <tr style="background-color: #4299e1; color: #ffffff;">
+                        <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Student</th>
+                        <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Course</th>
+                        <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Date</th>
+                        <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in attendance_records %}
+                    <tr style="background-color: #ffffff; transition: background-color 0.3s ease;">
+                        <td style="border: 1px solid #ddd; padding: 12px; color: #4a5568;">{{ record.student.username }}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px; color: #4a5568;">{{ record.course }}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px; color: #4a5568;">{{ record.date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td style="border: 1px solid #ddd; padding: 12px; color: #4a5568;">{{ record.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add hover effect for table rows
+    const tableRows = document.querySelectorAll('tbody tr');
+    tableRows.forEach(row => {
+        row.addEventListener('mouseover', () => {
+            row.style.backgroundColor = '#f7fafc';
+        });
+        row.addEventListener('mouseout', () => {
+            row.style.backgroundColor = '#ffffff';
+        });
+    });
+</script>
+
+<style>
+    /* Responsive styles for the select dropdown */
+    @media (max-width: 600px) {
+        select {
+            font-size: 0.9rem; /* Smaller font size for smaller screens */
+            padding: 0.5rem; /* Smaller padding for smaller screens */
+        }
+    }
+</style>
+{% endblock %}

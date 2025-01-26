@@ -1,8 +1,19 @@
-{% extends "base.html" %}
+{% extends "base_update.html" %}
 
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
+<div class="nav-links" id="nav-links">
+    {% block nav_links %}
+        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('events.events') }}">Update Events</a>
+        <a href="{{ url_for('notices.notices') }}">Update Notices</a>
+        <a href="{{ url_for('academic.academic_calendar') }}">Update Calendar</a>
+        <a href="{{ url_for('attendance.view_attendance') }}" class="btn">View Attendance</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    {% endblock %}
+</div>
+
 <div class="container">
     <h1 style="font-size: 2rem; margin-bottom: 1.5rem;">Admin Dashboard</h1>
     

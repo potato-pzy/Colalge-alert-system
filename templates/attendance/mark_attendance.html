@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Mark Attendance{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: center; align-items: center; min-height: 80vh; background-color: #f8f9fa; padding: 2rem;">
+    <div style="background: #ffffff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); width: 100%; max-width: 500px; text-align: center;">
+        <h1 style="font-size: 2rem; font-weight: 600; color: #2d3748; margin-bottom: 1.5rem;">Mark Attendance</h1>
+        <form method="POST" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label for="course" style="font-size: 1rem; font-weight: 500; color: #4a5568;">Select Course:</label>
+                <select name="course" id="course" style="padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 1rem; color: #4a5568; background-color: #ffffff; transition: border-color 0.3s ease, box-shadow 0.3s ease;" required>
+                    <option value="Subject 1">Subject 1</option>
+                    <option value="Subject 2">Subject 2</option>
+                    <option value="Subject 3">Subject 3</option>
+                    <option value="Subject 4">Subject 4</option>
+                    <option value="Subject 5">Subject 5</option>
+                </select>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                <label for="status" style="font-size: 1rem; font-weight: 500; color: #4a5568;">Status:</label>
+                <select name="status" id="status" style="padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 1rem; color: #4a5568; background-color: #ffffff; transition: border-color 0.3s ease, box-shadow 0.3s ease;" required>
+                    <option value="Present">Present</option>
+                    <option value="Absent">Absent</option>
+                </select>
+            </div>
+            <button type="submit" style="padding: 0.75rem; border: none; border-radius: 8px; background-color: #4299e1; color: #ffffff; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background-color 0.3s ease, transform 0.2s ease;">Submit</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Add hover effect for the submit button using JavaScript
+    const submitButton = document.querySelector('button[type="submit"]');
+    submitButton.addEventListener('mouseover', () => {
+        submitButton.style.backgroundColor = '#3182ce';
+        submitButton.style.transform = 'translateY(-2px)';
+    });
+    submitButton.addEventListener('mouseout', () => {
+        submitButton.style.backgroundColor = '#4299e1';
+        submitButton.style.transform = 'translateY(0)';
+    });
+</script>
+{% endblock %}

@@ -36,6 +36,14 @@ class AcademicCalendar(db.Model):
     date = db.Column(db.DateTime, nullable=False)
     description = db.Column(db.Text, nullable=False)
 
+class Attendance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    course = db.Column(db.String(50), nullable=False)
+    date = db.Column(db.DateTime, default=datetime.utcnow)
+    status = db.Column(db.String(10), nullable=False)  
+    student = db.relationship('User', backref='attendance')
+
 # Decorators
 def login_required(f):
     @wraps(f)
@@ -96,12 +104,15 @@ def create_app():
     from routes.event_update import events_up
     from routes.notices_update import notices_up
     from routes.calender_update import calendar_up
+    from routes.attendence import attendance_bp
     app.register_blueprint(events_bp)
     app.register_blueprint(notices_bp, url_prefix='/notices')
     app.register_blueprint(academic, url_prefix='/academic')
     app.register_blueprint(events_up)
     app.register_blueprint(notices_up)
     app.register_blueprint(calendar_up)
+    app.register_blueprint(attendance_bp, url_prefix='/attendance')
+
 
     # User Authentication Routes
     @app.route('/login', methods=['GET', 'POST'])
@@ -258,7 +269,43 @@ def create_app():
             flash('Invalid date format. Please use YYYY-MM-DD format.', 'danger')
 
         return redirect(url_for('admin_dashboard'))
+    @app.route('/mark_attendance', methods=['GET', 'POST'])
+    @login_required
+    def mark_attendance():
+        if request.method == 'POST':
+            # Get form data
+            course = request.form.get('course')
+            status = request.form.get('status')  # 'Present' or 'Absent'
 
+            # Validate form data
+            if not course or not status:
+                flash('Please fill out all fields.', 'danger')
+                return redirect(url_for('mark_attendance'))
+
+            # Ensure the status is either 'Present' or 'Absent'
+            if status not in ['Present', 'Absent']:
+                flash('Invalid status. Please select "Present" or "Absent".', 'danger')
+                return redirect(url_for('mark_attendance'))
+
+            # Save attendance record
+            try:
+                new_attendance = Attendance(
+                    student_id=session['user_id'],
+                    course=course,
+                    status=status
+                )
+                db.session.add(new_attendance)
+                db.session.commit()
+                flash('Attendance marked successfully!', 'success')
+            except Exception as e:
+                db.session.rollback()
+                flash('An error occurred while marking attendance. Please try again.', 'danger')
+                print(f"Error: {e}")
+
+            return redirect(url_for('index'))
+
+        # Render the form for marking attendance
+        return render_template('mark_attendance.html')
     @app.route('/add_calendar_event', methods=['POST'])
     @admin_required
     def add_calendar_event():
@@ -286,6 +333,19 @@ def create_app():
         session.pop('admin_logged_in', None)
         flash('Logged out successfully!', 'info')
         return redirect(url_for('admin_login'))
+    
+    @app.route('/view_attendance', methods=['GET'])
+    @admin_required
+    def view_attendance():
+     if 'admin_logged_in' not in session:
+        flash('Admin access required.', 'danger')
+        print("ivede annu problem")
+        return redirect(url_for('admin_login'))
+
+     course = request.args.get('course', default='Subject 1')  # Default to Subject 1
+     attendance_records = Attendance.query.filter_by(course=course).all()
+
+     return render_template('/attendance/view_attendance.html', attendance_records=attendance_records, course=course)
 
     @app.route('/')
     @login_required

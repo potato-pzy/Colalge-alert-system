@@ -4,25 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/style.css">
     <title>Admin Login</title>
     <style>
+        /* Root Variables */
         :root {
-            --primary-color: #4f46e5;
-            --secondary-color: #818cf8;
-            --background-color: #f3f4f6;
+            --primary-color: #6d28d9; /* Purple */
+            --secondary-color: #8b5cf6; /* Lighter Purple */
+            --background-color: #f0f0f0;
             --text-color: #333;
-            --card-bg-color: white;
-            --input-bg-color: #f9fafb;
-            --input-border-color: #e5e7eb;
+            --neumorphic-shadow: 8px 8px 16px #d9d9d9, -8px -8px 16px #ffffff;
+            --neumorphic-shadow-inset: inset 8px 8px 16px #d9d9d9, inset -8px -8px 16px #ffffff;
+            --transition-speed: 0.3s;
         }
 
+        /* Global Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* Body Styling */
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--background-color);
@@ -31,57 +33,158 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            padding: 1rem;
+            overflow: hidden;
         }
 
+        /* Container */
         .container {
             max-width: 400px;
-            width: 100%;
+            width: 90%;
             padding: 2rem;
+            background: var(--background-color);
+            border-radius: 20px;
+            box-shadow: var(--neumorphic-shadow);
+            animation: fadeIn 1s ease-in-out;
         }
 
-        .card {
-            background-color: var(--card-bg-color);
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
+        /* Heading */
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
             text-align: center;
+            animation: slideIn 0.5s ease-in-out;
         }
 
+        /* Form Group */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 10px;
+            background: var(--background-color);
+            box-shadow: var(--neumorphic-shadow-inset);
+            font-size: 1rem;
+            color: var(--text-color);
+            transition: box-shadow var(--transition-speed) ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            box-shadow: var(--neumorphic-shadow-inset), 0 0 0 3px rgba(109, 40, 217, 0.1);
+        }
+
+        /* Button Styling */
         button {
-            background-color: var(--primary-color);
+            width: 100%;
+            background: var(--primary-color);
             border: none;
             color: white;
             padding: 0.8rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 10px;
             cursor: pointer;
-            border-radius: 8px;
+            box-shadow: var(--neumorphic-shadow);
+            transition: background-color var(--transition-speed) ease, transform var(--transition-speed) ease;
+        }
+
+        button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Flash Messages */
+        .flash-messages {
+            margin-top: 1rem;
+        }
+
+        .flash-messages p {
+            color: #dc2626; /* Red for error messages */
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            input,
+            button {
+                padding: 0.7rem;
+            }
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div class="card">
-            <h2>Admin Login</h2>
-            <form action="/login/admin" method="POST">
-                <div class="form-group">
-                    <label for="username">Admin Username</label>
-                    <input type="text" id="username" name="username" placeholder="Enter admin username" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Admin Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter admin password" required>
-                </div>
-                <button type="submit">Login</button>
-            </form>
+        <h2>Admin Login</h2>
+        <form action="/login/admin" method="POST">
+            <div class="form-group">
+                <label for="username">Admin Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter admin username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Admin Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter admin password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <!-- Flash Messages -->
+        <div class="flash-messages">
             {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <p style="color: red;">{{ message }}</p>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
-
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
         </div>
     </div>
 </body>
